@@ -1,0 +1,16 @@
+div#profileContainer
+	div#soundcloud.profile
+		div.avatar(style = 'background-image: url('+soundcloudProfile.avatar_url+')')
+		h1(id = _id, class = 'username')= soundcloudProfile.username
+			span= ' ('+soundcloudProfile.full_name+')'
+		h2.description= '\"'+soundcloudProfile.description+'\"'
+		h3= 'Plan: '+soundcloudProfile.plan
+		h3= 'Follwing: '+soundcloudProfile.followings_count
+		h3= 'Followed by: '+soundcloudProfile.followers_count
+	div#appConnectionContainer
+		div#connection.connected
+	div#connectedApp.profile
+		div#playlists
+		- each playlist in playlists
+			div(id = playlist.id, class= 'playlistThumb', tracks= JSON.stringify(playlist.tracks))= playlist.title
+		
