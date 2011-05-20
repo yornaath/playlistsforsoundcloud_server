@@ -65,9 +65,9 @@ var soundcloud;
 //Router middleware
 function ifUserAuthenticated(req, res, next){
 	if(req.session.soundcloud_id) next()
-	else res.send(JSON.stringify({
+	else res.render(null, {
 		"error" : "Acces Denied"
-	}));
+	});
 };
 
 function loadUser(req, res, next){
@@ -162,10 +162,14 @@ app.get('/user/playlists/:playlist_id/update.:format', ifUserAuthenticated, load
 		user.playlists.id(req.params['playlist_id']).tags = playlistData.tags;
 		user.playlists.id(req.params['playlist_id']).tracks = playlistData.tracks;
 		user.save(function(err) {
-			if(err) throw new Error(err)
-			res.render(null, {
-				'success': 'Updated'
+			if(err) res.render(null, {
+				'error': err
 			})
+			else {
+				res.render(null, {
+					'success': 'Updated'
+				})				
+			}
 		});
 	} else if(!playlistModel) {
 		res.render(null, {
@@ -176,6 +180,21 @@ app.get('/user/playlists/:playlist_id/update.:format', ifUserAuthenticated, load
 			'error': 'no playlistdata in post request'
 		});
 	}
+});
+
+app.get('/user/playlists/:playlist_id/destroy.:format', ifUserAuthenticated, loadUser, function(req, res) {
+	var user = req.user.model;
+	user.playlists.id(req.params['playlist_id']).remove();
+	user.save(function(err) {
+		if(err) res.render(null, {
+			'error': err
+		})
+		else {
+			res.render(null, {
+				'success': 'Destroyed'
+			});
+		}
+	})
 });
 
 app.get('/authorizeapp', function(req, res) {
