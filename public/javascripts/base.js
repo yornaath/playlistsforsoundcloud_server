@@ -1,7 +1,7 @@
+
 $(document).ready(function() {
 	
-	
-	$('.playlistThumb').mouseenter(function() {
+		$('.playlistThumb').mouseenter(function() {
 		
 		var tracks = JSON.parse($(this).attr('tracks'));
 		var playlistInfo = $("<div class='playlistInfo'><ol></ol></div>");
@@ -27,7 +27,11 @@ $(document).ready(function() {
 				$('.playlistInfo').remove();
 			});
 		});
-	})
+	});
+	
+	$('#connected').click(function() {
+		
+	});
 	
 	
 });
