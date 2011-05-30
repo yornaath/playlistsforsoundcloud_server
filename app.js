@@ -1,41 +1,22 @@
 /**
  * Module dependencies.
  */
+
+var sys = require('sys');
+
+require.paths.unshift('./modules');
+
 var express = require('express'),
-		sys = require('sys'),
-		Soundcloud = require('./models/soundcloud').Soundcloud,
-		mongoose = require('mongoose');
+		cf = require("cloudfoundry"),
+		Soundcloud = require('./modules/models/soundcloud').Soundcloud,
+		User = require('./modules/models/user');
 		
 var app = module.exapp_ports = express.createServer();
 
 // Configuration
 var host = 'localhost';
-var app_port = 3000;
-var db_port = 27017
+var app_port = cf.getAppPort() || 3000;
 
-//Define database schema
-var Schema = mongoose.Schema,
-		ObjectId = Schema.ObjectId;
-
-var Playlists = new Schema({
-	title: String,
-	tags: [String],
-	createdAt: {type: Date, default: Date.now},
-	tracks: {}
-});
-
-var User = new Schema({
-	_id: ObjectId,
-	soundcloud_id: Number,
-	playlists: [Playlists]
-});
-
-mongoose.model('User', User);
-//mongoose.model('Playlists', Playlists);
-
-//connect to database and set up models
-mongoose.connect('mongodb://localhost/my_database');
-var User = mongoose.model('User');
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -74,15 +55,9 @@ function loadUser(req, res, next){
 	User.findOne({soundcloud_id: req.session.soundcloud_id}, function(err, model) {
 		if(err) throw new Error(err)
 		else {
-			soundcloud.me(function(err, me) {
-				if(err) throw new Error(err)
-				else {
-					req.user = {};
-					req.user.model = model;
-					req.user.soundcloudProfile = me;
-					next();
-				}
-			});
+			req.user = {};
+			req.user.model = model;
+			next();
 		}
 	});
 };
@@ -127,7 +102,7 @@ app.get('/', function(req, res){
 	});
 });
 
-// CREATE TEST DATA
+/* CREATE TEST DATA
 app.get('/create', ifUserAuthenticated, loadUser, function(req, res) {
 	var user = req.user.model;
 	var pls = {};
@@ -143,7 +118,7 @@ app.get('/create', ifUserAuthenticated, loadUser, function(req, res) {
 		if(err) throw new Error(err)
 		else res.send('Pl created')
 	})
-});
+}); */
 
 
 app.get('/user.:format?', ifUserAuthenticated, loadUser, function(req, res) {
@@ -270,7 +245,7 @@ app.get('/authorizeapp', function(req, res) {
 });
 
 if (!module.parent) {
-  app.listen(app_port);
+  app.listen(cf.getAppPort() || app_port);
   console.log("Express server listening on app_port %d", app.address().port);
 }
 

@@ -1,0 +1,9 @@
+{
+  "mongodb-2dfa1": {
+    "hostname": "localhost",
+    "port": 27017,
+    "username": "",
+    "password": "",
+    "db": "my_database"
+  }
+}
