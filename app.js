@@ -17,7 +17,6 @@ var app = module.exapp_ports = express.createServer();
 var host = 'localhost';
 var app_port = cf.getAppPort() || 3000;
 
-
 app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
