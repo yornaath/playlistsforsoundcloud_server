@@ -208,7 +208,7 @@ app.get('/authorizeapp', function(req, res) {
 						else if(user){
 							req.session.user_id = user._id;
 							req.session.soundcloud_id = me.id;
-							res.render('connected', {});
+							res.redirect('http://soundcloud.com/you/tracks/?p=playlists');
 						} else {
 							//If it doesnt: create new user, save it and																						
 							var newUser = new User();
@@ -217,7 +217,7 @@ app.get('/authorizeapp', function(req, res) {
 								if(err) throw new Error(err)
 								else {
 									req.session.soundcloud_id = me.id;
-									res.render('connected', {});
+									res.redirect('http://soundcloud.com/you/tracks/?p=playlists');
 								}
 							});
 						}
